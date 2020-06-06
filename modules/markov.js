@@ -22,10 +22,16 @@ module.exports = {
     alias: '/markov',
     handlers: {
       learn: text => {
+        if (text === undefined) {
+          return 'Ошибочка! Текст укажи.';
+        }
+
         markov.data.push({ string: text, attr: Date.now() });
         markov.buildCorpus();
 
         fs.appendFile(DEMODB, `\n${text}`, err => err && console.log(err));
+
+        return 'Заебок';
       },
       gen: (options = '{ "score": 50, "length": 15 }') => markov.generate({
         maxTries: 2000, 

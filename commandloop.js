@@ -4,7 +4,7 @@ class CommandLoop {
   modules = {};
   aliases = {};
   emitter = null;
-  commandRegExp = /\/([a-z]*)\s\:([a-z]*)\s?(.*)?/;
+  commandRegExp = /\/([a-z]*)\s\-([a-z]*)\s?(.*)?/;
 
   constructor({ modules = [] }) {
     this.emitter = new EventEmitter();
@@ -38,7 +38,7 @@ class CommandLoop {
 
   handlePlainTextCommand(command) {
     if (!this._isCommand(command)) {
-      throw new Error(`Error in command: ${command} \nThis is not a command. Command scheme: '/alias :action ...args'`);
+      throw new Error(`Error in command: ${command} \nThis is not a command. Command scheme: '/alias -handler ...args'`);
     }
 
     const [ alias, handler, source ] = this._splitCommand(command);
@@ -48,7 +48,7 @@ class CommandLoop {
     }
 
     if (!this._handlerExist(alias, handler)) {
-      throw new Error(`Error in command: ${command} \n:${handler} doesn't exist.`);
+      throw new Error(`Error in command: ${command} \n-${handler} doesn't exist.`);
     }
 
     return this._handler(alias, handler)(source);
