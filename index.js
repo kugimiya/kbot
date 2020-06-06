@@ -1,12 +1,37 @@
 const { CommandLoop } = require('./commandloop');
 const prompt = require('prompt');
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const { discordToken } = require('./tokens.json');
 
 const loop = new CommandLoop({
   modules: [
     require('./modules/markov'),
-    require('./modules/utils')
+    require('./modules/utils'),
+    require('./modules/help'),
   ]
 });
+
+client.on('ready', () => {
+  console.log(`\nLogged in as ${client.user.tag}!`);
+});
+
+client.on('message', msg => {
+  if (loop._isCommand(msg.content)) {
+    loop.emit('push', msg.content)
+      .then(result => msg.reply(result))
+      .catch(error => msg.reply(error.message));
+  } else {
+    if (!msg.author.bot) {
+      msg.content.split('\n').forEach(line => {
+        console.log({ line })
+        loop.emit('push', `/markov :learn ${line}`).catch(error => console.log(error))
+      });
+    }
+  }
+});
+
+client.login(discordToken);
 
 prompt.start();
 ask();
@@ -21,5 +46,3 @@ function ask() {
       .then(() => ask());
   });
 }
-
-// const source = 'Today you are you. That is truer than true. There is no one alive who is you-er than you. You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose. You’re on your own. The more that you read, the more things you will know. The more that you learn, the more places you’ll go. Think left and think right and think low and think high. Oh, the thinks you can think up if only you try.';
