@@ -1,2 +1,4 @@
 node_modules
-modules/markov_demo.txt.dist
+modules/markov_demo.txt
+modules/markov_demo.txt.cp
+tokens.json
