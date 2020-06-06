@@ -17,7 +17,7 @@ function ask() {
     
     loop.emit('push', pResult.command.replace(' \n', ''))
       .then(result => console.log({ result }))
-      .catch(error => console.error(error.message))
+      .catch(error => console.error(error))
       .then(() => ask());
   });
 }
